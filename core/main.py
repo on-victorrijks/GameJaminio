@@ -1,6 +1,7 @@
 import pygame as pg
 import keyManager as km
 import painter as painter
+import entities as entities
 from grid import *
 from colors import *
 import math
@@ -23,6 +24,7 @@ timer = clock.tick(FPS)
 running = True
 # Sprites collector
 sprites_collecor = pg.sprite.Group()
+player = entities.Player()
 
 # Create Grid
 CORE_grid = Grid(71,8)
@@ -30,9 +32,13 @@ CORE_grid = Grid(71,8)
 # Load level 1
 CORE_grid.loadLevel("level1")
 
+# frame count
 frame = 0
 
+
+
 while running:
+
 
     # Update level
     if frame % 10 == 0:
@@ -43,9 +49,15 @@ while running:
             screen.blit(block.image, (block.rect.x, block.rect.y))
             sprites_collecor.add(block)
     
+    # Update player
+    screen.blit(player.image, player.rect)
+
+    if frame%100 == 0:
+        player.move_right()
 
     # Draw sprites
     pg.display.update()
+    pg.display.flip()
 
     events = pg.event.get()
     keyAction = km.get(events)
