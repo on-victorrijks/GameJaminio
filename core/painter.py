@@ -17,17 +17,17 @@ def drawMap(pg,mapData,partData,blockSize):
             if block == '0':
                 imagePath = "BLUE" 
                 blockType = '0'
-                sprites.append(Block(pg, blockSize, imagePath,pos,blockType,column))
+                sprites.append(Block(pg, blockSize, imagePath,pos,blockType,column,lineIndex))
             elif block == '1':
                 imagePath = "WHITE"
                 blockType = '1'
-                sprites.append(Block(pg, blockSize, imagePath,pos,blockType,column))
+                sprites.append(Block(pg, blockSize, imagePath,pos,blockType,column,lineIndex))
     
     return sprites
 
 class Block(pg.sprite.Sprite):
 
-    def __init__(self,pg,blockSize,imagePath,pos,blockType,column):
+    def __init__(self,pg,blockSize,imagePath,pos,blockType,column,line):
 
         # TO ADD IMAGE SPRITES
         pg.sprite.Sprite.__init__(self)
@@ -37,4 +37,5 @@ class Block(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (pos[0],pos[1]+blockSize/2)
         self.column = column
+        self.line = line
 
