@@ -12,10 +12,8 @@ def get(events,context=None):
     action = None
 
     for event in events:
-        if event.type == KEYDOWN:
-
-            if event.key == K_DOWN:
-                action = "go_down"
+        if event.type == KEYDOWN and event.key=K_DOWN:
+            action= "go_down"
 
         elif event.type == QUIT:
             action = "exit"
