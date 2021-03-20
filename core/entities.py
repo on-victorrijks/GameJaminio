@@ -1,4 +1,5 @@
 import pygame as pg
+from projectile import  Projectile
 
 class Player(pg.sprite.Sprite):
 
@@ -10,7 +11,8 @@ class Player(pg.sprite.Sprite):
         self.armor = 0
         self.speed = 5
         self.jump = 1.5
-        self.image = pg.transform.scale(pg.image.load('../assets/player.png').convert_alpha(), (50, 50))
+        self.bullet_pool = pygame.sprite.Group()
+        self.image = pg.transform.scale(pg.image.load('../assets/trump.png').convert_alpha(), (50, 50))
         self.rect = self.image.get_rect()
         self.rect.x = 250
         self.rect.y = 50
@@ -102,3 +104,7 @@ class Player(pg.sprite.Sprite):
             
 
         return isCollision
+
+    def shoot_with_m16(self):
+
+        self.bullet_pool.add(Projectile())
