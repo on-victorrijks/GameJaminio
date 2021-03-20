@@ -1,0 +1,30 @@
+perso :
+trump
+	- arme : m16
+	- pv
+	- trumpiste (MAGA) donne pv
+	- pv = populisme
+
+superpouvoir : 
+	- frappes chirugicales quand il a 10 kills
+
+
+ennemis : 
+démocrates
+	- insultes
+postiers
+	- lettres
+ecolos
+	- fleurs
+medias
+	- micros
+
+boss :
+	- Accusation de viol
+	- Hillary
+	- Biden
+	- Poutine
+
+but :
+1) arriver maison blanche
+2) récupérer des points covid & roubles
