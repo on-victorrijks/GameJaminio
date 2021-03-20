@@ -39,7 +39,7 @@ for i in range(30):
 running = True
 # Sprites collector
 sprites_collecor = pg.sprite.Group()
-player = entities.Player()
+player = entities.Player(screen)
 updateMap = True
 
 # Create Grid
@@ -91,6 +91,8 @@ while running:
         player.accelerateX(-0.2)
     elif keyAction == "go_right":
         player.accelerateX(0.2)
+    elif keyAction == "go_projectile":
+        player.projectile()
     else:
         updateMap = False
     

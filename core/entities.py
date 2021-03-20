@@ -1,9 +1,10 @@
 import pygame as pg
-from projectile import Projectile
+
+import time
 
 class Player(pg.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self, screen):
         super().__init__()
 
         # Data
@@ -37,6 +38,8 @@ class Player(pg.sprite.Sprite):
         self.speedX = 0
         self.speedY = 0
 
+        self.screen = screen
+
     def accelerateX(self, amount):
         self.accX += amount
 
@@ -58,7 +61,7 @@ class Player(pg.sprite.Sprite):
         self.accX = self.accX*0.65
         if abs(self.accX) < 0.1/100:
             self.accX = 0
-            
+
         if not self.mapCollision(mapBlocks, partData):
             self.accY = self.accY + 0.02 # gravity
         else:
@@ -101,7 +104,7 @@ class Player(pg.sprite.Sprite):
                         temp = pg.sprite.collide_rect(self, block)
                         if temp:
                             isCollision = True
-                            break             
+                            break
                     elif dimension == "Y":
                         temp = pg.sprite.collide_rect(self, block)
                         if temp:
@@ -110,6 +113,10 @@ class Player(pg.sprite.Sprite):
 
         return isCollision
 
-    def shoot_with_m16(self):
+    def projectile(self):
+        image = pg.image.load('../assets/trump.png')
 
-        self.bullet_pool.add(Projectile())
+        for i in range(6):
+            self.screen.blit(image, (self.posX + self.rect.x + 100*1, self.rect.y))
+
+
