@@ -25,6 +25,7 @@ running = True
 # Sprites collector
 sprites_collecor = pg.sprite.Group()
 player = entities.Player()
+updateMap = True
 
 # Create Grid
 CORE_grid = Grid(71,8)
@@ -37,11 +38,13 @@ frame = 0
 
 
 
+
 while running:
 
+    sprites_collecor.empty()
 
     # Update level
-    if frame % 2 == 0:
+    if updateMap:
         playerBlockX = player.rect.x//BLOCKSIZE
         minBlockIndex = playerBlockX-5
         if minBlockIndex < 0:
@@ -53,11 +56,14 @@ while running:
         for block in mapBlocks:
             screen.blit(block.image, (block.rect.x, block.rect.y))
             sprites_collecor.add(block)
+        
+        updateMap = False
     
     # Update player
     events = pg.event.get()
     keyAction = km.get(events)
 
+    updateMap = True
     if keyAction == "exit":
         running = False
         break
@@ -67,8 +73,12 @@ while running:
         player.accelerateX(-0.1)
     elif keyAction == "go_right":
         player.accelerateX(0.1)
+    else:
+        updateMap = False
     
-    player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer])
+    playerUpdated = player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer])
+    if playerUpdated[0] != playerUpdated[1]:
+        updateMap = True
 
     screen.blit(player.image, player.rect)
 
@@ -77,7 +87,6 @@ while running:
     # Draw sprites
     pg.display.update()
     pg.display.flip()
-
 
 
 

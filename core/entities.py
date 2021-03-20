@@ -31,6 +31,9 @@ class Player(pg.sprite.Sprite):
 
     def update(self, mapBlocks, partData):
 
+        # Before positions
+        beforePos = [self.rect.x, self.rect.y]
+
         # Speed updating
         self.speedX += self.accX
         self.speedY += self.accY
@@ -50,6 +53,7 @@ class Player(pg.sprite.Sprite):
         self.speedX = self.speedX*0.9
         if abs(self.speedX) < 0.1/100:
             self.speedX = 0
+
         self.speedY = self.speedY*0.9
         if abs(self.speedY) < 0.1/100:
             self.speedY = 0
@@ -58,6 +62,11 @@ class Player(pg.sprite.Sprite):
         # Updating positions
         self.rect.x += self.speedX
         self.rect.y += self.speedY
+
+        # After pos 
+        afterPos = [self.rect.x, self.rect.y]
+
+        return  [beforePos,afterPos]
 
     def mapCollision(self, mapBlocks, partData):
         isCollision = False
