@@ -11,10 +11,10 @@ class Player(pg.sprite.Sprite):
         self.speed = 5
         self.accelerate = 0
         self.jump = 1.5
-        self.image = pg.image.load('../assets/trump.png').convert_alpha()
+        self.image = pg.transform.scale(pg.image.load('../assets/trump.png').convert_alpha(), (60, 120))
         self.rect = self.image.get_rect()
-        self.rect.x = 400
-        self.rect.y = 500
+        self.rect.x = 60
+        self.rect.y = 120
 
     def move_right(self):
         self.rect.x += self.speed
