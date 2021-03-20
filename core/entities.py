@@ -139,13 +139,13 @@ class Ennemy(pg.sprite.Sprite):
         # Tour
         self.tourPos = 0
         self.tourDir = 1
+        self.shouldTour = True
         self.movements = movements
 
         # Animations
-        self.still  = pg.transform.scale(pg.image.load('../assets/ennemy{}.png'.format(ennemyID)).convert_alpha(), (72, 100))
-        self.moving1 = pg.transform.scale(pg.image.load('../assets/ennemy{}_moving1.png'.format(ennemyID)).convert_alpha(), (72, 100))
-        self.moving2 = pg.transform.scale(pg.image.load('../assets/ennemy{}_moving2.png'.format(ennemyID)).convert_alpha(), (72, 100))
+        self.still  = pg.transform.scale(pg.image.load('../assets/ennemy{}.png'.format(ennemyID)).convert_alpha(), (59, 100))
         self.image = self.still
+        self.reversedImage = False
 
         # Spec. (Position)
         self.rect = self.image.get_rect()
@@ -168,15 +168,28 @@ class Ennemy(pg.sprite.Sprite):
 
         if self.tourDir == 1:
             addTour = 0
-            self.tourPos += self.speed
+            if self.shouldTour:
+                self.tourPos += self.speed
         elif self.tourDir == -1:
             addTour = 1
-            self.tourPos -= self.speed
+            if self.shouldTour:
+                self.tourPos -= self.speed
+    
 
         if abs(self.movements[addTour]) <= abs(self.tourPos):
             self.tourDir = -self.tourDir
             self.image = pg.transform.flip(self.image, True, False)
+            self.reversedImage = not self.reversedImage
         
+        if self.health < self.maxHealth:
+            self.shouldTour = False
+            if player.rect.x >= self.rect.x:
+                if self.reversedImage:
+                    self.image = pg.transform.flip(self.image, True, False)
+                    self.reversedImage = not self.reversedImage
+                
+
+
         self.showHealth(player,screen)
 
         self.rect.x = self.originalX - player.posX + self.tourPos

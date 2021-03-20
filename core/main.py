@@ -39,6 +39,7 @@ for i in range(30):
 """
 
 running = True
+dirPlayer = 1
 # Sprites collector
 sprites_collecor = pg.sprite.Group()
 player = entities.Player(screen)
@@ -100,12 +101,16 @@ while running:
                 player.image = player.moving1
     else:
         player.image = player.still
+        if dirPlayer == -1:
+            player.image = pg.transform.flip(player.image, True, False)
 
     if player.accX < 0:
         dirPlayer = -1
         screen.blit(pg.transform.flip(player.image, True, False), player.rect)
-    else:
+    elif player.accX > 0:
         dirPlayer = 1
+        screen.blit(player.image, player.rect)
+    else:
         screen.blit(player.image, player.rect)
 
     # Update player
