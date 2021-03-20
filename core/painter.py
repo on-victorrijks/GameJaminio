@@ -10,8 +10,8 @@ def drawMap(pg,mapData,partData,blockSize):
             block = line[index]
 
             pos = [
-                index - partData[0],
-                lineIndex
+                (index - partData[0])*blockSize,
+                lineIndex*blockSize
             ]
 
             if block == '0':
