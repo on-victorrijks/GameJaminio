@@ -61,8 +61,10 @@ ennemies_collector = []
 
 # Ennemies (Level 1)
 testEnnemy = entities.Ennemy(100, 10, 2, 1, BLOCKSIZE*5, 380, [-80,80])
-ennemies_collector.append(testEnnemy)
+testEnnemy2 = entities.Ennemy(100, 10, 2, 1, BLOCKSIZE*14, 620, [-100,100])
 
+ennemies_collector.append(testEnnemy)
+ennemies_collector.append(testEnnemy2)
 
 
 while running:
@@ -75,10 +77,10 @@ while running:
         playerBlockY = player.rect.y//BLOCKSIZE
         player.playerBlock = playerBlockX
         player.playerH = playerBlockY
-        minBlockIndex = playerBlockX-15
+        minBlockIndex = playerBlockX-16
         if minBlockIndex < 0:
             minBlockIndex = 0
-        minX,maxX = minBlockIndex, playerBlockX+15
+        minX,maxX = minBlockIndex, playerBlockX+16
         minX_aroundPlayer,maxX_aroundPlayer = playerBlockX-15, playerBlockX+15
         mapBlocks = painter.drawMap(pg,CORE_grid.map,[minX,maxX],BLOCKSIZE,player)
 
@@ -129,7 +131,7 @@ while running:
     
     # Ennemies update
     for ennemy in ennemies_collector:
-        isAlive = ennemy.update(player)
+        isAlive = ennemy.update(player,screen)
         if not isAlive:
             ennemies_collector.remove(ennemy)
         screen.blit(ennemy.image, ennemy.rect)
@@ -141,7 +143,7 @@ while running:
 
     # Bullets update
     for bullet in bullets_collector:
-        shouldLive = bullet.update(mapBlocks)
+        shouldLive = bullet.update(player,mapBlocks,ennemies_collector)
         if not shouldLive:
             bullets_collector.remove(bullet)
         screen.blit(bullet.image, bullet.rect)

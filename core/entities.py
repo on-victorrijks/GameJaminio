@@ -131,6 +131,7 @@ class Ennemy(pg.sprite.Sprite):
         super().__init__()
 
         # Data
+        self.maxHealth = 100
         self.health = 100
         self.attack = 10
         self.armor = 0
@@ -156,7 +157,14 @@ class Ennemy(pg.sprite.Sprite):
         # Movements
         self.speed = 2
 
-    def update(self,player):
+    def showHealth(self,player,screen):
+        w = 100
+        h = 10
+        hW = (self.health/self.maxHealth)*w
+        pg.draw.rect(screen, (100,100,100), pg.Rect((self.originalX - player.posX + self.tourPos), self.rect.y - 60,w,h), 2)
+        pg.draw.rect(screen, (255,0,0), pg.Rect((self.originalX - player.posX + self.tourPos), self.rect.y - 60,hW,h))
+
+    def update(self,player,screen):
 
         if self.tourDir == 1:
             addTour = 0
@@ -168,6 +176,8 @@ class Ennemy(pg.sprite.Sprite):
         if abs(self.movements[addTour]) <= abs(self.tourPos):
             self.tourDir = -self.tourDir
             self.image = pg.transform.flip(self.image, True, False)
+        
+        self.showHealth(player,screen)
 
         self.rect.x = self.originalX - player.posX + self.tourPos
         return self.health > 0
@@ -187,14 +197,14 @@ class Bullet(pg.sprite.Sprite):
         self.rect.y = y + 64
         self.blockH = math.floor(self.rect.y/blockSize)
 
-    def update(self,mapBlocks):
+    def update(self,player,mapBlocks,ennemies_collector):
         self.rect.x += self.v
         self.timer += 1
-        if self.timer >= 90 or self.collidingWithWall(mapBlocks):
+        if self.timer >= 90 or self.collidingWithElm(player,mapBlocks,ennemies_collector):
             return False
         return True
 
-    def collidingWithWall(self, mapBlocks):
+    def collidingWithElm(self, player, mapBlocks, ennemies_collector):
         isCollision = False
         for block in mapBlocks:
             if block.line == self.blockH and block.blockType not in ['0','3','4']:
@@ -202,5 +212,12 @@ class Bullet(pg.sprite.Sprite):
                 if temp:
                     isCollision = True
                     break
+        for ennemy in ennemies_collector:
+            temp = pg.sprite.collide_rect(self, ennemy)
+            if temp:
+                ennemy.health -= player.attack
+                isCollision = True
+                break
+
         return isCollision
 
