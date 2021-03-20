@@ -1,12 +1,12 @@
-import pygame
+import pygame as pg
 
-class Projectile(pygame.sprite.Sprite):
+class Projectile(pg.sprite.Sprite):
 
     #trouve un endroit où blit les bullets
     def __init__(self):
         super().__init__()
         self.speed = 5
-        self.image = pygame.image.load('assets/download.jpg')
+        self.image = pg.image.load('../assets/player.png')
         self.rect = self.image.get_rect()
         self.rect.x = player.rect.x + 100
         self.rect.y = player.rect.y + 40
