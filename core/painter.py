@@ -63,4 +63,3 @@ class Block(pg.sprite.Sprite):
         self.rect.center = (pos[0],pos[1]+blockSize/2)
         self.column = column
         self.line = line
-

@@ -53,8 +53,16 @@ CORE_grid.loadLevel("level1")
 # frame count
 frame = 0
 
-# bullets
+# Bullets
 bullets_collector = []
+
+# Ennemies
+ennemies_collector = []
+
+# Ennemies (Level 1)
+testEnnemy = entities.Ennemy(100, 10, 2, 1, BLOCKSIZE*6, 200)
+ennemies_collector.append(testEnnemy)
+
 
 
 while running:
@@ -119,6 +127,13 @@ while running:
         if len(bullets_collector) == 0:
             updateMap = False
     
+    # Ennemies update
+    for ennemy in ennemies_collector:
+        isAlive = ennemy.update(player)
+        if not isAlive:
+            ennemies_collector.remove(ennemy)
+        screen.blit(ennemy.image, ennemy.rect)
+
     # Player update
     playerUpdated = player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer],BLOCKSIZE)
     if playerUpdated[0] != playerUpdated[1]:

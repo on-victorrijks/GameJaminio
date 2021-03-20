@@ -123,11 +123,41 @@ class Player(pg.sprite.Sprite):
 
         return isCollision
 
-    def projectile(self):
-        image = pg.image.load('../assets/trump.png')
 
-        for i in range(6):
-            self.screen.blit(image, (self.posX + self.rect.x + 100*1, self.rect.y))
+
+class Ennemy(pg.sprite.Sprite):
+
+    def __init__(self, health, attack, armor, ennemyID, x, y):
+        super().__init__()
+
+        # Data
+        self.health = 100
+        self.attack = 10
+        self.armor = 0
+
+        # Animations
+        self.still  = pg.transform.scale(pg.image.load('../assets/ennemy{}.png'.format(ennemyID)).convert_alpha(), (72, 100))
+        self.moving1 = pg.transform.scale(pg.image.load('../assets/ennemy{}_moving1.png'.format(ennemyID)).convert_alpha(), (72, 100))
+        self.moving2 = pg.transform.scale(pg.image.load('../assets/ennemy{}_moving2.png'.format(ennemyID)).convert_alpha(), (72, 100))
+        self.image = self.still
+
+        # Spec. (Position)
+        self.rect = self.image.get_rect()
+        self.originalX = x
+        self.originalY = y
+        self.rect.x = x
+        self.rect.y = y
+
+        # Movements
+        self.speed = 10
+
+    def update(self,player):
+        self.rect.x = self.originalX - player.posX
+        if self.health <= 0:
+            return False
+        return True
+
+
 
 
 class Bullet(pg.sprite.Sprite):
