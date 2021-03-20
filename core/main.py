@@ -60,7 +60,7 @@ bullets_collector = []
 ennemies_collector = []
 
 # Ennemies (Level 1)
-testEnnemy = entities.Ennemy(100, 10, 2, 1, BLOCKSIZE*6, 200)
+testEnnemy = entities.Ennemy(100, 10, 2, 1, BLOCKSIZE*5, 380, [-80,80])
 ennemies_collector.append(testEnnemy)
 
 
@@ -124,7 +124,7 @@ while running:
         newBullet = entities.Bullet(player.rect.x,player.rect.y + (random.randint(0,6)-3),BLOCKSIZE,dirPlayer)
         bullets_collector.append(newBullet)
     else:
-        if len(bullets_collector) == 0:
+        if len(bullets_collector) == 0 and len(ennemies_collector) == 0:
             updateMap = False
     
     # Ennemies update

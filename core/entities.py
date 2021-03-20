@@ -127,13 +127,18 @@ class Player(pg.sprite.Sprite):
 
 class Ennemy(pg.sprite.Sprite):
 
-    def __init__(self, health, attack, armor, ennemyID, x, y):
+    def __init__(self, health, attack, armor, ennemyID, x, y, movements):
         super().__init__()
 
         # Data
         self.health = 100
         self.attack = 10
         self.armor = 0
+
+        # Tour
+        self.tourPos = 0
+        self.tourDir = 1
+        self.movements = movements
 
         # Animations
         self.still  = pg.transform.scale(pg.image.load('../assets/ennemy{}.png'.format(ennemyID)).convert_alpha(), (72, 100))
@@ -149,13 +154,23 @@ class Ennemy(pg.sprite.Sprite):
         self.rect.y = y
 
         # Movements
-        self.speed = 10
+        self.speed = 2
 
     def update(self,player):
-        self.rect.x = self.originalX - player.posX
-        if self.health <= 0:
-            return False
-        return True
+
+        if self.tourDir == 1:
+            addTour = 0
+            self.tourPos += self.speed
+        elif self.tourDir == -1:
+            addTour = 1
+            self.tourPos -= self.speed
+
+        if abs(self.movements[addTour]) <= abs(self.tourPos):
+            self.tourDir = -self.tourDir
+            self.image = pg.transform.flip(self.image, True, False)
+
+        self.rect.x = self.originalX - player.posX + self.tourPos
+        return self.health > 0
 
 
 
