@@ -36,13 +36,13 @@ while running:
 
     # Update level
     if frame % 10 == 0:
-        minX,maxX = frame//100 , 30+frame//100
+        minX,maxX = 0, 10
         mapBlocks = painter.drawMap(pg,CORE_grid.map,[minX,maxX],BLOCKSIZE)
 
         for block in mapBlocks:
             screen.blit(block.image, (block.rect.x, block.rect.y))
             sprites_collecor.add(block)
-            
+    
 
     # Draw sprites
     pg.display.update()
