@@ -135,6 +135,9 @@ class Ennemy(pg.sprite.Sprite):
         self.health = 100
         self.attack = 10
         self.armor = 0
+        self.maxAttackTimer = 30
+        self.attackTimer = 30
+        self.range = 100
 
         # Tour
         self.tourPos = 0
@@ -164,6 +167,16 @@ class Ennemy(pg.sprite.Sprite):
         pg.draw.rect(screen, (100,100,100), pg.Rect((self.originalX - player.posX + self.tourPos), self.rect.y - 60,w,h), 2)
         pg.draw.rect(screen, (255,0,0), pg.Rect((self.originalX - player.posX + self.tourPos), self.rect.y - 60,hW,h))
 
+    def attackClosePlayer(self,player):
+        dist = math.sqrt( (player.rect.x - self.rect.x)**2 + (player.rect.y - self.rect.y)**2 )
+
+        if dist < self.range and self.attackTimer == self.maxAttackTimer:
+            player.health -= self.attack
+            self.attackTimer = 0
+
+        if self.attackTimer != self.maxAttackTimer:
+            self.attackTimer += 1
+
     def update(self,player,screen):
 
         if self.tourDir == 1:
@@ -174,8 +187,9 @@ class Ennemy(pg.sprite.Sprite):
             addTour = 1
             if self.shouldTour:
                 self.tourPos -= self.speed
-    
 
+        self.attackClosePlayer(player)
+    
         if abs(self.movements[addTour]) <= abs(self.tourPos):
             self.tourDir = -self.tourDir
             self.image = pg.transform.flip(self.image, True, False)

@@ -145,6 +145,13 @@ while running:
     playerUpdated = player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer],BLOCKSIZE)
     if playerUpdated[0] != playerUpdated[1]:
         updateMap = True
+    # Player health
+    w = 200
+    h = 20
+    hW = (player.health/player.maxHealth)*w
+    pg.draw.rect(screen, (100,100,100), pg.Rect(9,9,w+2,h+2))
+    pg.draw.rect(screen, (200,200,200), pg.Rect(10,10,w,h))
+    pg.draw.rect(screen, (255,0,0), pg.Rect(10,10,hW,h))
 
     # Bullets update
     for bullet in bullets_collector:
