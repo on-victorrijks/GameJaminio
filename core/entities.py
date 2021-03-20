@@ -5,21 +5,23 @@ class Player(pg.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
+
+        # Data
         self.maxHealth = 200
         self.health = 200
         self.attack = 20
         self.armor = 0
-        self.speed = 5
-        self.jump = 1.5
+
+        # Bullets
         self.bullet_pool = pg.sprite.Group()
 
+        # Animations
         self.still  = pg.transform.scale(pg.image.load('../assets/player.png').convert_alpha(), (72, 100))
         self.moving1 = pg.transform.scale(pg.image.load('../assets/player_moving1.png').convert_alpha(), (72, 100))
         self.moving2 = pg.transform.scale(pg.image.load('../assets/player_moving2.png').convert_alpha(), (72, 100))
-
         self.image = self.still
 
-
+        # Spec.
         self.rect = self.image.get_rect()
         self.rect.x = 250
         self.rect.y = 50
@@ -105,10 +107,6 @@ class Player(pg.sprite.Sprite):
                         if temp:
                             isCollision = True
                             break
-
-
-
-            
 
         return isCollision
 
