@@ -4,7 +4,7 @@ from pygame.locals import (
     K_DOWN,
     K_LEFT,
     K_RIGHT,
-    K_ESCAPE,
+    K_SPACE,
     KEYDOWN,
     QUIT,
 )
@@ -32,8 +32,8 @@ def get(events,context=None):
                 action = "go_left"
             elif event.key == K_RIGHT:
                 action = "go_right"
-            elif event.key == pygame.K_SPACE:
-                player.bullet_pool()
+            elif event.key == K_SPACE:
+                action = "go_projectile"
 
         elif event.type == QUIT:
             action = "exit"
