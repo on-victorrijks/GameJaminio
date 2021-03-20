@@ -41,8 +41,13 @@ while running:
 
 
     # Update level
-    if frame % 10 == 0:
-        minX,maxX = 0, 10
+    if frame % 2 == 0:
+        playerBlockX = player.rect.x//BLOCKSIZE
+        minBlockIndex = playerBlockX-5
+        if minBlockIndex < 0:
+            minBlockIndex = 0
+        minX,maxX = minBlockIndex, playerBlockX+5
+        minX_aroundPlayer,maxX_aroundPlayer = playerBlockX-2, playerBlockX+2
         mapBlocks = painter.drawMap(pg,CORE_grid.map,[minX,maxX],BLOCKSIZE)
 
         for block in mapBlocks:
@@ -50,21 +55,30 @@ while running:
             sprites_collecor.add(block)
     
     # Update player
-    screen.blit(player.image, player.rect)
-
-    if frame%100 == 0:
-        player.move_right()
-
-    # Draw sprites
-    pg.display.update()
-    pg.display.flip()
-
     events = pg.event.get()
     keyAction = km.get(events)
 
     if keyAction == "exit":
         running = False
         break
+    elif keyAction == "onetap_go_up":
+        player.accelerateY(-0.7,mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer])
+    elif keyAction == "go_left":
+        player.accelerateX(-0.1)
+    elif keyAction == "go_right":
+        player.accelerateX(0.1)
+    
+    player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer])
+
+    screen.blit(player.image, player.rect)
+
+    
+
+    # Draw sprites
+    pg.display.update()
+    pg.display.flip()
+
+
 
 
     frame += 1
