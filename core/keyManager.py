@@ -32,6 +32,8 @@ def get(events,context=None):
                 action = "go_left"
             elif event.key == K_RIGHT:
                 action = "go_right"
+            elif event.key == pygame.K_SPACE:
+                player.bullet_pool()
 
         elif event.type == QUIT:
             action = "exit"
