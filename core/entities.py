@@ -12,7 +12,14 @@ class Player(pg.sprite.Sprite):
         self.speed = 5
         self.jump = 1.5
         self.bullet_pool = pg.sprite.Group()
-        self.image = pg.transform.scale(pg.image.load('../assets/player.png').convert_alpha(), (50, 50))
+
+        self.still  = pg.transform.scale(pg.image.load('../assets/player.png').convert_alpha(), (72, 100))
+        self.moving1 = pg.transform.scale(pg.image.load('../assets/player_moving1.png').convert_alpha(), (72, 100))
+        self.moving2 = pg.transform.scale(pg.image.load('../assets/player_moving2.png').convert_alpha(), (72, 100))
+
+        self.image = self.still
+
+
         self.rect = self.image.get_rect()
         self.rect.x = 250
         self.rect.y = 50
@@ -51,7 +58,7 @@ class Player(pg.sprite.Sprite):
             self.accX = 0
             
         if not self.mapCollision(mapBlocks, partData):
-            self.accY = self.accY + 0.01 # gravity
+            self.accY = self.accY + 0.02 # gravity
         else:
             if self.accY >= 0:
                 self.accY = 0
@@ -82,7 +89,7 @@ class Player(pg.sprite.Sprite):
 
         for block in mapBlocks:
             if partData[0] <= block.column <= partData[1]:
-                if block.blockType != '0':
+                if block.blockType not in ['0','3','4']:
                     if dimension == "X" and block.line <= self.playerH:
                         temp = pg.sprite.collide_rect(self, block)
                         if temp:
