@@ -1,20 +1,49 @@
 import pygame as pg
 import keyManager as km
+import painter as painter
+from grid import *
+from colors import *
 
 # First init
 pg.init()
 clock = pg.time.Clock()
 
 # Parameters
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 500
 FPS = 30
+BLOCKSIZE = round(SCREEN_WIDTH/10)
 
 screen = pg.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+screen.fill(BLACK)
 timer = clock.tick(FPS)
 
 running = True
+# Sprites collector
+sprites_collecor = pg.sprite.Group()
+
+# Create Grid
+CORE_grid = Grid(12,5)
+
+# Load level 1
+CORE_grid.loadLevel("level1")
+
+frame = 0
+
 while running:
+
+    # Update level
+    if frame % 10 == 0:
+        minX,maxX = 0 , 10
+        mapBlocks = painter.drawMap(pg,CORE_grid.map,[minX,maxX],BLOCKSIZE)
+
+        for block in mapBlocks:
+            screen.blit(block.image, (block.rect.x, block.rect.y))
+            sprites_collecor.add(block)
+            
+
+    # Draw sprites
+    pg.display.update()
 
     events = pg.event.get()
     keyAction = km.get(events)
@@ -23,8 +52,7 @@ while running:
         running = False
         break
 
-    screen.fill((255, 255, 255))
-    pg.draw.circle(screen, (0, 0, 255), (250, 250), 75)
-    pg.display.flip()
+
+    frame += 1
 
 pg.quit()
