@@ -6,6 +6,7 @@ from grid import *
 from colors import *
 import math
 import time
+import random 
 # First init
 pg.init()
 clock = pg.time.Clock()
@@ -24,6 +25,7 @@ pg.display.set_caption('El famoso Trump')
 
 
 # Level 1 - Loading
+"""
 intro_level1 = pg.transform.scale(pg.image.load("../assets/intro_level1.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)) 
 brighten = 255/30
 screen.blit(intro_level1, (0,0))
@@ -34,7 +36,7 @@ for i in range(30):
     screen.blit(intro_level1, (0,0))
     pg.display.update()
     time.sleep(0.2/30)
-
+"""
 
 running = True
 # Sprites collector
@@ -51,7 +53,8 @@ CORE_grid.loadLevel("level1")
 # frame count
 frame = 0
 
-
+# bullets
+bullets_collector = []
 
 
 while running:
@@ -77,28 +80,6 @@ while running:
         
         updateMap = False
     
-    # Update player
-    events = pg.event.get()
-    keyAction = km.get(events)
-
-    updateMap = True
-    if keyAction == "exit":
-        running = False
-        break
-    elif keyAction == "onetap_go_up":
-        player.accelerateY(-1,mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer])
-    elif keyAction == "go_left":
-        player.accelerateX(-0.2)
-    elif keyAction == "go_right":
-        player.accelerateX(0.2)
-    elif keyAction == "go_projectile":
-        player.projectile()
-    else:
-        updateMap = False
-    
-    playerUpdated = player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer],BLOCKSIZE)
-    if playerUpdated[0] != playerUpdated[1]:
-        updateMap = True
 
     # verif direction of acceleration
     if player.accX != 0:
@@ -111,12 +92,48 @@ while running:
         player.image = player.still
 
     if player.accX < 0:
+        dirPlayer = -1
         screen.blit(pg.transform.flip(player.image, True, False), player.rect)
     else:
+        dirPlayer = 1
         screen.blit(player.image, player.rect)
 
+    # Update player
+    events = pg.event.get()
+    keyAction = km.get(events)
+
+    updateMap = True
+    if keyAction == "exit":
+        running = False
+        break
+    elif keyAction == "onetap_go_up":
+        player.accelerateY(-1,mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer],BLOCKSIZE)
+    elif keyAction == "go_left":
+        player.accelerateX(-0.2)
+    elif keyAction == "go_right":
+        player.accelerateX(0.2)
+    elif keyAction == "go_projectile":
+        newBullet = entities.Bullet(player.rect.x,player.rect.y + (random.randint(0,6)-3),BLOCKSIZE,dirPlayer)
+        bullets_collector.append(newBullet)
+    else:
+        if len(bullets_collector) == 0:
+            updateMap = False
+    
+    # Player update
+    playerUpdated = player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer],BLOCKSIZE)
+    if playerUpdated[0] != playerUpdated[1]:
+        updateMap = True
+
+    # Bullets update
+    for bullet in bullets_collector:
+        shouldLive = bullet.update(mapBlocks)
+        if not shouldLive:
+            bullets_collector.remove(bullet)
+        screen.blit(bullet.image, bullet.rect)
+
+
     # show fps
-    fps = str(int(clock.get_fps()))
+    fps = str(len(bullets_collector))
     font = pg.font.SysFont("Arial", 18)
     fps_text = font.render(fps, 1, pg.Color("red"))
     screen.blit(fps_text, (10,0))
