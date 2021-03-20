@@ -28,3 +28,6 @@ boss :
 but :
 1) arriver maison blanche
 2) récupérer des points covid & roubles
+
+
+120x120

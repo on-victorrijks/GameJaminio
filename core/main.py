@@ -3,16 +3,18 @@ import keyManager as km
 import painter as painter
 from grid import *
 from colors import *
+import math
 
 # First init
 pg.init()
 clock = pg.time.Clock()
 
 # Parameters
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 500
+SCREEN_WIDTH = 1800
+SCREEN_HEIGHT = 900
+BLOCK_NBR = 15
 FPS = 30
-BLOCKSIZE = round(SCREEN_WIDTH/10)
+BLOCKSIZE = round(SCREEN_WIDTH/BLOCK_NBR)
 
 screen = pg.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 screen.fill(BLACK)
@@ -23,7 +25,7 @@ running = True
 sprites_collecor = pg.sprite.Group()
 
 # Create Grid
-CORE_grid = Grid(12,5)
+CORE_grid = Grid(71,8)
 
 # Load level 1
 CORE_grid.loadLevel("level1")
@@ -34,7 +36,7 @@ while running:
 
     # Update level
     if frame % 10 == 0:
-        minX,maxX = 0 , 10
+        minX,maxX = frame//100 , 30+frame//100
         mapBlocks = painter.drawMap(pg,CORE_grid.map,[minX,maxX],BLOCKSIZE)
 
         for block in mapBlocks:

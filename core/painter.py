@@ -32,5 +32,5 @@ class Block(pg.sprite.Sprite):
         self.image = pg.Surface((blockSize, blockSize))
         self.image.fill(imagePath)
         self.rect = self.image.get_rect()
-        self.rect.center = (pos[0],pos[1])
+        self.rect.center = (pos[0],pos[1]+blockSize/2)
 
