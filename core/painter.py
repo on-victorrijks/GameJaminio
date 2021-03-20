@@ -1,7 +1,7 @@
 from colors import *
 import pygame as pg
 
-def drawMap(pg,mapData,partData,blockSize):
+def drawMap(pg,mapData,partData,blockSize,player):
 
     sprites = []
 
@@ -10,7 +10,7 @@ def drawMap(pg,mapData,partData,blockSize):
             block = line[index]
             column = index
             pos = [
-                (index - partData[0])*blockSize,
+                (index)*blockSize - player.posX,
                 lineIndex*blockSize
             ]
 

@@ -45,13 +45,16 @@ while running:
 
     # Update level
     if updateMap:
-        playerBlockX = player.rect.x//BLOCKSIZE
-        minBlockIndex = playerBlockX-5
+        playerBlockX = int(player.posX//BLOCKSIZE)
+        playerBlockY = player.rect.y//BLOCKSIZE
+        player.playerBlock = playerBlockX
+        player.playerH = playerBlockY
+        minBlockIndex = playerBlockX-15
         if minBlockIndex < 0:
             minBlockIndex = 0
-        minX,maxX = minBlockIndex, playerBlockX+5
-        minX_aroundPlayer,maxX_aroundPlayer = playerBlockX-2, playerBlockX+2
-        mapBlocks = painter.drawMap(pg,CORE_grid.map,[minX,maxX],BLOCKSIZE)
+        minX,maxX = minBlockIndex, playerBlockX+15
+        minX_aroundPlayer,maxX_aroundPlayer = playerBlockX-15, playerBlockX+15
+        mapBlocks = painter.drawMap(pg,CORE_grid.map,[minX,maxX],BLOCKSIZE,player)
 
         for block in mapBlocks:
             screen.blit(block.image, (block.rect.x, block.rect.y))
@@ -76,7 +79,7 @@ while running:
     else:
         updateMap = False
     
-    playerUpdated = player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer])
+    playerUpdated = player.update(mapBlocks,[minX_aroundPlayer,maxX_aroundPlayer],BLOCKSIZE)
     if playerUpdated[0] != playerUpdated[1]:
         updateMap = True
 

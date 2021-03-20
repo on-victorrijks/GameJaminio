@@ -10,10 +10,15 @@ class Player(pg.sprite.Sprite):
         self.armor = 0
         self.speed = 5
         self.jump = 1.5
-        self.image = pg.transform.scale(pg.image.load('../assets/trump.png').convert_alpha(), (60, 120))
+        self.image = pg.transform.scale(pg.image.load('../assets/player.png').convert_alpha(), (50, 50))
         self.rect = self.image.get_rect()
-        self.rect.x = 60
-        self.rect.y = 120
+        self.rect.x = 250
+        self.rect.y = 50
+        self.playerBlock = 0
+        self.playerH = 0
+
+        # Position
+        self.posX = 50
 
         # Movements
         self.accX = 0
@@ -29,17 +34,17 @@ class Player(pg.sprite.Sprite):
             return
         self.accY += amount
 
-    def update(self, mapBlocks, partData):
+    def update(self, mapBlocks, partData, blockSize):
 
         # Before positions
-        beforePos = [self.rect.x, self.rect.y]
+        beforePos = [self.posX, self.rect.y]
 
         # Speed updating
         self.speedX += self.accX
         self.speedY += self.accY
 
         # Air resistance & gravity
-        self.accX = self.accX*0.5
+        self.accX = self.accX*0.65
         if abs(self.accX) < 0.1/100:
             self.accX = 0
             
@@ -60,23 +65,40 @@ class Player(pg.sprite.Sprite):
 
 
         # Updating positions
-        self.rect.x += self.speedX
-        self.rect.y += self.speedY
+        if not self.mapCollision(mapBlocks, partData, "X"):
+            self.posX += self.speedX
+        if not self.mapCollision(mapBlocks, partData, "UY"):
+            self.rect.y += self.speedY
 
         # After pos 
-        afterPos = [self.rect.x, self.rect.y]
+        afterPos = [self.posX, self.rect.y]
 
         return  [beforePos,afterPos]
 
-    def mapCollision(self, mapBlocks, partData):
+    def mapCollision(self, mapBlocks, partData, dimension="Y"):
         isCollision = False
 
         for block in mapBlocks:
             if partData[0] <= block.column <= partData[1]:
                 if block.blockType != '0':
-                    temp = pg.sprite.collide_rect(self, block)
-                    if temp:
-                        isCollision = True
-                        break
+                    if dimension == "X" and block.line <= self.playerH:
+                        temp = pg.sprite.collide_rect(self, block)
+                        if temp:
+                            isCollision = True
+                            break
+                    elif dimension == "UY" and block.line <= self.playerH:
+                        temp = pg.sprite.collide_rect(self, block)
+                        if temp:
+                            isCollision = True
+                            break             
+                    elif dimension == "Y":
+                        temp = pg.sprite.collide_rect(self, block)
+                        if temp:
+                            isCollision = True
+                            break
+
+
+
+            
 
         return isCollision
