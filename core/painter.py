@@ -7,6 +7,7 @@ loadedImages = {
     "floor_level1": pg.transform.scale(pg.image.load("../assets/floor_level1.png"), (blockSize, blockSize)),
     "lamp_level1": pg.transform.scale(pg.image.load("../assets/lamp_level1.png"), (blockSize, blockSize)),
     "tube_level1": pg.transform.scale(pg.image.load("../assets/tube_level1.png"), (blockSize, blockSize)),
+    "floor_level2": pg.transform.scale(pg.image.load("../assets/floor_level2.png"), (blockSize, blockSize)),
 }
 
 def drawMap(pg,mapData,partData,blockSize,player):
@@ -15,7 +16,11 @@ def drawMap(pg,mapData,partData,blockSize,player):
 
     for lineIndex,line in enumerate(mapData):
         for index in range(partData[0],partData[1]+1):
-            block = line[index]
+            try:
+                block = line[index]
+            except:
+                return "LEVEL_END"
+
             column = index
             pos = [
                 (index)*blockSize - player.posX,
@@ -42,6 +47,14 @@ def drawMap(pg,mapData,partData,blockSize,player):
                 imageID = "tube_level1" 
                 blockType = '4'
                 sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == '7':
+                imageID = "floor_level2" 
+                blockType = '7'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == '8':
+                color = (227,81,59)
+                blockType = '8'
+                sprites.append(Block(pg, blockSize, color,pos,blockType,column,lineIndex,isFill=True))
     
     return sprites
 

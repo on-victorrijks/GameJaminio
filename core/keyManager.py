@@ -7,7 +7,8 @@ from pygame.locals import (
     K_SPACE,
     KEYDOWN,
     QUIT,
-    K_s
+    K_s,
+    K_d
 )
 
 def get(events,context=None):
@@ -37,6 +38,8 @@ def get(events,context=None):
                 action = "go_projectile"
             elif event.key == K_s:
                 action = "slowDown_switch"
+            elif event.key == K_d:
+                action = "pause_switch"
 
         elif event.type == QUIT:
             action = "exit"

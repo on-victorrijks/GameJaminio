@@ -27,7 +27,7 @@ class Player(pg.sprite.Sprite):
         # Spec.
         self.rect = self.image.get_rect()
         self.rect.x = 250
-        self.rect.y = 50
+        self.rect.y = 600
         self.playerBlock = 0
         self.playerH = 0
 
@@ -75,7 +75,7 @@ class Player(pg.sprite.Sprite):
             self.accX = 0
 
         if not self.mapCollision(mapBlocks, partData, blockSize):
-            self.accY = self.accY + 0.02 # gravity
+            self.accY = self.accY + 0.08 # gravity
         else:
             if self.accY >= 0:
                 self.accY = 0
@@ -97,7 +97,9 @@ class Player(pg.sprite.Sprite):
         else:
             self.posX += collideX*10
             self.speedX += collideX*10
-
+    
+        if self.posX < 50:
+            self.posX = 50
 
         if not self.mapCollision(mapBlocks, partData, blockSize, "UY"):
             self.rect.y += self.speedY
@@ -137,6 +139,70 @@ class Player(pg.sprite.Sprite):
 
 
 
+class Boss(pg.sprite.Sprite):
+
+    def __init__(self, health, attack, ennemyName, x, y):
+        super().__init__()
+
+        # Data
+        self.maxHealth = health
+        self.health = health
+        self.attack = attack
+        self.maxAttackTimer = 180
+        self.attackTimer = 180
+        self.range = 500
+        self.wasReloadingAttackSpeed = False
+        self.isBoss = True
+
+        # Animations
+        self.an1  = pg.image.load('../assets/{}1.png'.format(ennemyName)).convert_alpha()
+        self.still = self.an1
+        self.an2  = pg.image.load('../assets/{}2.png'.format(ennemyName)).convert_alpha()
+        self.attack_img  = pg.image.load('../assets/{}_attack.png'.format(ennemyName)).convert_alpha()
+
+        self.image = self.still
+
+        # Spec. (Position)
+        self.rect = self.image.get_rect()
+        self.originalX = x
+        self.originalY = y
+        self.rect.x = x
+        self.rect.y = y
+
+
+    def showHealth(self,player,screen):
+        w = 330
+        h = 20
+        hW = (self.health/self.maxHealth)*w
+        pg.draw.rect(screen, (100,100,100), pg.Rect((self.originalX - player.posX)-15, self.rect.y - 45,w,h), 2)
+        pg.draw.rect(screen, (255,0,0), pg.Rect((self.originalX - player.posX)-15, self.rect.y - 45,hW,h))
+
+    def attackClosePlayer(self,player):
+        dist = math.sqrt( (player.rect.x - self.rect.x)**2 + (player.rect.y - self.rect.y)**2 )
+
+        if dist < self.range and self.attackTimer == self.maxAttackTimer:
+            self.image = self.attack_img
+            player.health -= self.attack
+            self.attackTimer = 0
+            self.wasReloadingAttackSpeed = True
+
+        if self.attackTimer != self.maxAttackTimer:
+            self.image = self.attack_img
+            self.attackTimer += 1
+        elif dist > self.range and self.attackTimer == self.maxAttackTimer and self.wasReloadingAttackSpeed:
+            self.image = self.still
+            self.wasReloadingAttackSpeed = False
+            
+
+    def update(self,player,screen):
+
+        self.attackClosePlayer(player)
+        self.showHealth(player,screen)
+
+        self.rect.x = self.originalX - player.posX
+        return self.health > 0
+
+
 class Ennemy(pg.sprite.Sprite):
 
     def __init__(self, health, attack, armor, ennemyID, x, y, movements):
@@ -150,6 +216,8 @@ class Ennemy(pg.sprite.Sprite):
         self.maxAttackTimer = 30
         self.attackTimer = 30
         self.range = 100
+        self.wasReloadingAttackSpeed = False
+        self.isBoss = False
 
         # Tour
         self.tourPos = 0
@@ -159,6 +227,7 @@ class Ennemy(pg.sprite.Sprite):
 
         # Animations
         self.still  = pg.transform.scale(pg.image.load('../assets/ennemy{}.png'.format(ennemyID)).convert_alpha(), (59, 100))
+        self.attack_img  = pg.transform.scale(pg.image.load('../assets/ennemy{}_attack.png'.format(ennemyID)).convert_alpha(), (59, 100))
         self.image = self.still
         self.reversedImage = False
 
@@ -176,18 +245,25 @@ class Ennemy(pg.sprite.Sprite):
         w = 100
         h = 10
         hW = (self.health/self.maxHealth)*w
-        pg.draw.rect(screen, (100,100,100), pg.Rect((self.originalX - player.posX + self.tourPos), self.rect.y - 60,w,h), 2)
-        pg.draw.rect(screen, (255,0,0), pg.Rect((self.originalX - player.posX + self.tourPos), self.rect.y - 60,hW,h))
+        pg.draw.rect(screen, (100,100,100), pg.Rect((self.originalX - player.posX + self.tourPos)-15, self.rect.y - 45,w,h), 2)
+        pg.draw.rect(screen, (255,0,0), pg.Rect((self.originalX - player.posX + self.tourPos)-15, self.rect.y - 45,hW,h))
 
     def attackClosePlayer(self,player):
         dist = math.sqrt( (player.rect.x - self.rect.x)**2 + (player.rect.y - self.rect.y)**2 )
 
         if dist < self.range and self.attackTimer == self.maxAttackTimer:
+            self.image = self.attack_img
             player.health -= self.attack
             self.attackTimer = 0
+            self.wasReloadingAttackSpeed = True
 
         if self.attackTimer != self.maxAttackTimer:
+            self.image = self.attack_img
             self.attackTimer += 1
+        elif dist > self.range and self.attackTimer == self.maxAttackTimer and self.wasReloadingAttackSpeed:
+            self.image = self.still
+            self.wasReloadingAttackSpeed = False
+            
 
     def update(self,player,screen):
 
