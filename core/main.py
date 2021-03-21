@@ -104,7 +104,6 @@ def run_level(LEVELNAME):
         ennemies_collector.append(entities.Ennemy(200, 50, 2, 1, 8350, 260, [-100,100]))
         ennemies_collector.append(entities.Ennemy(300, 50, 2, 2, 9050, 505, [-100,100]))
         ennemies_collector.append(entities.Ennemy(300, 60, 2, 1, 12150, 625, [-100,100]))
-        ennemies_collector.append(entities.Ennemy(300, 60, 2, 1, 12950, 380, [-100,100]))
     elif LEVELNAME == "level1_boss":
         # Sounds
         pg.mixer.music.load('../assets/music/level1.mp3')
@@ -265,6 +264,8 @@ def run_level(LEVELNAME):
                     pg.mixer.music.set_volume(0.1)
             elif keyAction == "pause_switch":
                 isPause = not isPause
+            elif keyAction == "cheat":
+                return "success"
             else:
                 if not isPause:
                     if len(bullets_collector) == 0 and len(ennemies_collector) == 0:
@@ -442,6 +443,6 @@ while levelIndex < len(levels_names):
     else:
         levelIndex += 1
 
-time.sleep(50)
+time.sleep(5)
 
 pg.quit()
