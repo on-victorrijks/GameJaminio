@@ -12,6 +12,8 @@ class Player(pg.sprite.Sprite):
         self.health = 200
         self.attack = 20
         self.armor = 0
+        self.ammo = 5
+        self.reloading = False
 
         # Bullets
         self.bullet_pool = pg.sprite.Group()
@@ -37,6 +39,8 @@ class Player(pg.sprite.Sprite):
         self.accY = 0
         self.speedX = 0
         self.speedY = 0
+        self.mana = 75
+        self.maxMana = 100
 
         self.screen = screen
 
@@ -48,7 +52,15 @@ class Player(pg.sprite.Sprite):
             return
         self.accY += amount
 
-    def update(self, mapBlocks, partData, blockSize):
+    def update(self, mapBlocks, partData, blockSize, frame):
+
+        # Reloading
+        if self.reloading:
+            if self.ammo < 5:
+                if frame%10 == 0:
+                    self.ammo += 1
+            else:
+                self.reloading = False
 
         # Before positions
         beforePos = [self.posX, self.rect.y]
@@ -131,10 +143,10 @@ class Ennemy(pg.sprite.Sprite):
         super().__init__()
 
         # Data
-        self.maxHealth = 100
-        self.health = 100
-        self.attack = 10
-        self.armor = 0
+        self.maxHealth = health
+        self.health = health
+        self.attack = attack
+        self.armor = armor
         self.maxAttackTimer = 30
         self.attackTimer = 30
         self.range = 100
