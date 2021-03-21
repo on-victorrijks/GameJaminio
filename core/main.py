@@ -24,19 +24,7 @@ timer = clock.tick(FPS)
 pg.display.set_caption('El famoso Trump')
 
 
-# Level 1 - Loading
-"""
-intro_level1 = pg.transform.scale(pg.image.load("../assets/intro_level1.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)) 
-brighten = 255/30
-screen.blit(intro_level1, (0,0))
-pg.display.update()
-time.sleep(1)
-for i in range(30):
-    intro_level1.fill((brighten, brighten, brighten), special_flags=pg.BLEND_RGB_ADD)
-    screen.blit(intro_level1, (0,0))
-    pg.display.update()
-    time.sleep(0.2/30)
-"""
+
 
 # Image loading
 healthBarOutliner = pg.transform.scale(pg.image.load("../assets/healthbar.png"), (480, 120)) 
@@ -104,6 +92,19 @@ def run_level(LEVELNAME):
         ennemies_collector.append(entities.Ennemy(200, 50, 2, 1, 8350, 260, [-100,100]))
         ennemies_collector.append(entities.Ennemy(300, 50, 2, 2, 9050, 505, [-100,100]))
         ennemies_collector.append(entities.Ennemy(300, 60, 2, 1, 12150, 625, [-100,100]))
+
+        # Level 1 - Loading
+        intro_level1 = pg.transform.scale(pg.image.load("../assets/intro_level1.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)) 
+        brighten = 255/30
+        screen.blit(intro_level1, (0,0))
+        pg.display.update()
+        time.sleep(1)
+        for i in range(30):
+            intro_level1.fill((brighten, brighten, brighten), special_flags=pg.BLEND_RGB_ADD)
+            screen.blit(intro_level1, (0,0))
+            pg.display.update()
+            time.sleep(0.2/30)
+
     elif LEVELNAME == "level1_boss":
         # Sounds
         pg.mixer.music.load('../assets/music/level1.mp3')
@@ -120,6 +121,19 @@ def run_level(LEVELNAME):
             missiles_collector.append(entities.Missile(300,BLOCKSIZE,i*250))
             missiles_collector.append(entities.Missile(1000,BLOCKSIZE,i*300))
             missiles_collector.append(entities.Missile(500,BLOCKSIZE,i*360))
+
+        # Level 1 boss - Loading
+        intro_level1 = pg.transform.scale(pg.image.load("../assets/intro_level1_boss.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)) 
+        brighten = 255/30
+        screen.blit(intro_level1, (0,0))
+        pg.display.update()
+        time.sleep(1)
+        for i in range(30):
+            intro_level1.fill((brighten, brighten, brighten), special_flags=pg.BLEND_RGB_ADD)
+            screen.blit(intro_level1, (0,0))
+            pg.display.update()
+            time.sleep(0.2/30)
+
     elif LEVELNAME == "level2":
         # Sounds
         pg.mixer.music.load('../assets/music/level1.mp3')
@@ -139,6 +153,19 @@ def run_level(LEVELNAME):
             missiles_collector.append(entities.Missile(random.randint(pos0,pos1),BLOCKSIZE,i*100))
             missiles_collector.append(entities.Missile(random.randint(pos0,pos1),BLOCKSIZE,i*300))
             missiles_collector.append(entities.Missile(random.randint(pos0,pos1),BLOCKSIZE,i*500))
+
+        # Level 2 - Loading
+        intro_level1 = pg.transform.scale(pg.image.load("../assets/intro_level2.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)) 
+        brighten = 255/30
+        screen.blit(intro_level1, (0,0))
+        pg.display.update()
+        time.sleep(1)
+        for i in range(30):
+            intro_level1.fill((brighten, brighten, brighten), special_flags=pg.BLEND_RGB_ADD)
+            screen.blit(intro_level1, (0,0))
+            pg.display.update()
+            time.sleep(0.2/30)
+
     elif LEVELNAME == "final":
         # Sounds
         pg.mixer.music.load('../assets/music/level1.mp3')
@@ -146,6 +173,19 @@ def run_level(LEVELNAME):
         # Ennemies
         bullet_time_regen_coeff = 40
         ennemies_collector.append(entities.Biden(1500, 5, 10000, "biden", 1500, 300))
+
+        # Level Final - Loading
+        intro_level1 = pg.transform.scale(pg.image.load("../assets/intro_final.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)) 
+        brighten = 255/30
+        screen.blit(intro_level1, (0,0))
+        pg.display.update()
+        time.sleep(1)
+        for i in range(30):
+            intro_level1.fill((brighten, brighten, brighten), special_flags=pg.BLEND_RGB_ADD)
+            screen.blit(intro_level1, (0,0))
+            pg.display.update()
+            time.sleep(0.2/30)
+
     elif LEVELNAME == "ending":
         # Sounds
         pg.mixer.music.load('../assets/music/sad.mp3')

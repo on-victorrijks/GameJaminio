@@ -1,3 +1,9 @@
+"""
+
+Ici réside l'histoire
+
+"""
+
 
 import pygame
 from game import Game

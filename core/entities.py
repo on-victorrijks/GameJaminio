@@ -180,8 +180,8 @@ class Biden(pg.sprite.Sprite):
         self.maxHealth = health
         self.health = health
         self.attack = attack
-        self.maxAttackTimer = 30
-        self.attackTimer = 30
+        self.maxAttackTimer = 38
+        self.attackTimer = 38
         self.range = range
         self.wasReloadingAttackSpeed = False
         self.type = 3
