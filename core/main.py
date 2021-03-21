@@ -358,7 +358,7 @@ def run_level(LEVELNAME):
 
 # Levels manager
 levels_status = {
-    "level1": True,
+    "level1": False,
     "level1_boss": False,
     "level2": False,
     "final": False
