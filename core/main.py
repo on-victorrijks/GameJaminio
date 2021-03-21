@@ -85,6 +85,7 @@ def run_level(LEVELNAME):
     frame = 0
     # Bullets
     bullets_collector = []
+    bullets_collector_ennemies = []
     ennemies_collector = []
     missiles_collector = []
     bullet_time_regen_coeff = 1
@@ -115,12 +116,46 @@ def run_level(LEVELNAME):
         for i in range(1,20):
             missiles_collector.append(entities.Missile(300,BLOCKSIZE,i*100))
             missiles_collector.append(entities.Missile(400,BLOCKSIZE,i*175))
-            missiles_collector.append(entities.Missile(800,BLOCKSIZE,i*150))
-            missiles_collector.append(entities.Missile(400,BLOCKSIZE,i*200))
+            missiles_collector.append(entities.Missile(800,BLOCKSIZE,i*220))
+            missiles_collector.append(entities.Missile(400,BLOCKSIZE,i*330))
             missiles_collector.append(entities.Missile(300,BLOCKSIZE,i*250))
             missiles_collector.append(entities.Missile(1000,BLOCKSIZE,i*300))
             missiles_collector.append(entities.Missile(500,BLOCKSIZE,i*360))
-
+    elif LEVELNAME == "level2":
+        # Sounds
+        pg.mixer.music.load('../assets/music/level1.mp3')
+        pg.mixer.music.play(-1)
+        # Ennemies
+        ennemies_collector.append(entities.ShootingEnnemy(35, 40, 2, 3, 860, 500,0))
+        ennemies_collector.append(entities.ShootingEnnemy(35, 40, 2, 3, 1700, 380,0))
+        ennemies_collector.append(entities.ShootingEnnemy(35, 40, 2, 3, 2350, 500,0))
+        ennemies_collector.append(entities.Ennemy(300, 60, 2, 4, 2650, 260, [-100,100]))
+        ennemies_collector.append(entities.ShootingEnnemy(35, 40, 2, 3, 3100, 500,0))
+        ennemies_collector.append(entities.ShootingEnnemy(35, 40, 2, 3, 4850, 500,0))
+        ennemies_collector.append(entities.ShootingEnnemy(35, 40, 2, 3, 5600, 500,0))
+        ennemies_collector.append(entities.Ennemy(300, 60, 2, 4 , 6050, 620, [-100,100]))
+        pos0 = 400
+        pos1 = 7000
+        for i in range(1,20):
+            missiles_collector.append(entities.Missile(random.randint(pos0,pos1),BLOCKSIZE,i*100))
+            missiles_collector.append(entities.Missile(random.randint(pos0,pos1),BLOCKSIZE,i*300))
+            missiles_collector.append(entities.Missile(random.randint(pos0,pos1),BLOCKSIZE,i*500))
+    elif LEVELNAME == "final":
+        # Sounds
+        pg.mixer.music.load('../assets/music/level1.mp3')
+        pg.mixer.music.play(-1)
+        # Ennemies
+        bullet_time_regen_coeff = 40
+        ennemies_collector.append(entities.Biden(1500, 5, 10000, "biden", 1500, 300))
+    elif LEVELNAME == "ending":
+        # Sounds
+        pg.mixer.music.load('../assets/music/sad.mp3')
+        pg.mixer.music.play(-1)
+        pg.mixer.music.set_volume(0.6)
+        
+        screen.blit(pg.image.load("../assets/ending.png"), (0,0))
+        pg.display.update()
+        return "success"
 
 
     dirPlayer = 1
@@ -154,8 +189,16 @@ def run_level(LEVELNAME):
             mapBlocks = painter.drawMap(pg,CORE_grid.map,[minX,maxX],BLOCKSIZE,player)
 
             if mapBlocks == "LEVEL_END":
-                level_result = "success"
-                break
+                if LEVELNAME in ["level1_boss","final"]:
+                    if len(ennemies_collector) == 0:
+                        level_result = "success"
+                        break
+                    else:
+                        level_result = "failed"
+                        break
+                else:
+                    level_result = "success"
+                    break
 
             for block in mapBlocks:
                 screen.blit(block.image, (block.rect.x, block.rect.y))
@@ -240,12 +283,26 @@ def run_level(LEVELNAME):
         # Ennemies update
         for ennemy in ennemies_collector:
             isAlive = ennemy.update(player,screen)
-            if ennemy.isBoss:
+            if ennemy.type == 1:
                 if frame%30==0:
                     if ennemy.image == ennemy.an1:
                         ennemy.image = ennemy.an2
                     else:
                         ennemy.image = ennemy.an1
+            elif ennemy.type == 2:
+                canShoot,shootingDirection = ennemy.canShoot(player)
+                if canShoot:
+                    newBullet = entities.Bullet(ennemy.rect.x,ennemy.rect.y + (random.randint(0,6)-3),BLOCKSIZE,shootingDirection)
+                    SOUND_gunshot.play()
+                    bullets_collector_ennemies.append(newBullet)
+            elif ennemy.type == 3:
+                canShoot,shootingDirection = ennemy.canShoot(player)
+                if canShoot:
+                    newBullet = entities.Bullet(ennemy.rect.x,player.rect.y + (random.randint(0,6)-3),BLOCKSIZE,shootingDirection)
+                    SOUND_gunshot.play()
+                    bullets_collector_ennemies.append(newBullet)
+                if ennemy.health < ennemy.maxHealth/2 and len(missiles_collector) == 0:
+                    missiles_collector.append(entities.Missile(player.posX+player.rect.x,BLOCKSIZE,0))
 
 
             if not isAlive:
@@ -258,7 +315,7 @@ def run_level(LEVELNAME):
 
         # Missiles update
         for missile in missiles_collector:
-            if missile.v == 0 and missile.frameStart == frame:
+            if missile.v == 0 and missile.frameStart <= frame:
                 missile.v = 6
             
             isExisting = missile.update(player,mapBlocks)
@@ -272,7 +329,10 @@ def run_level(LEVELNAME):
             if player.mana > 0:
                 screen.blit(slowDownOverlay, (0,0))
                 player.mana -= 1
+                timer = clock.tick(18)
+                
             else:
+                timer = clock.tick(FPS)
                 SOUND_bulletTime_out.play()
                 slowDownPower = False
                 pg.mixer.music.set_volume(0.1)
@@ -304,14 +364,17 @@ def run_level(LEVELNAME):
         screen.blit(ammo_imgs[player.ammo], (10,SCREEN_HEIGHT-165))
 
 
-
-
-
         # Bullets update
         for bullet in bullets_collector:
             shouldLive = bullet.update(player,mapBlocks,ennemies_collector)
             if not shouldLive:
                 bullets_collector.remove(bullet)
+            screen.blit(bullet.image, bullet.rect)
+        
+        for bullet in bullets_collector_ennemies:
+            shouldLive = bullet.update_en(player,mapBlocks)
+            if not shouldLive:
+                bullets_collector_ennemies.remove(bullet)
             screen.blit(bullet.image, bullet.rect)
 
         # show fps
@@ -361,9 +424,10 @@ levels_status = {
     "level1": False,
     "level1_boss": False,
     "level2": False,
-    "final": False
+    "final": False,
+    "ending": False
 }
-levels_names = ["level1","level1_boss","level2","final"]
+levels_names = ["level1","level1_boss","level2","final","ending"]
 
 levelIndex = 0
 while levelIndex < len(levels_names):
@@ -377,5 +441,7 @@ while levelIndex < len(levels_names):
             levelIndex += 1
     else:
         levelIndex += 1
+
+time.sleep(50)
 
 pg.quit()

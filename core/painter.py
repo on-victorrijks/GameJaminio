@@ -7,7 +7,15 @@ loadedImages = {
     "floor_level1": pg.transform.scale(pg.image.load("../assets/floor_level1.png"), (blockSize, blockSize)),
     "lamp_level1": pg.transform.scale(pg.image.load("../assets/lamp_level1.png"), (blockSize, blockSize)),
     "tube_level1": pg.transform.scale(pg.image.load("../assets/tube_level1.png"), (blockSize, blockSize)),
-    "floor_level2": pg.transform.scale(pg.image.load("../assets/floor_level2.png"), (blockSize, blockSize)),
+    "floor_level1boss": pg.transform.scale(pg.image.load("../assets/floor_level1boss.png"), (blockSize, blockSize)),
+    "sand_level2": pg.transform.scale(pg.image.load("../assets/sand_level2.png"), (blockSize, blockSize)),
+    "cloud1_level2": pg.transform.scale(pg.image.load("../assets/cloud1_level2.png"), (blockSize, blockSize)),
+    "cloud2_level2": pg.transform.scale(pg.image.load("../assets/cloud2_level2.png"), (blockSize, blockSize)),
+    "bg_q_final": pg.transform.scale(pg.image.load("../assets/bg_q_final.png"), (blockSize, blockSize)),
+    "floor_final": pg.transform.scale(pg.image.load("../assets/floor_final.png"), (blockSize, blockSize)),
+    "colonne_final_top": pg.transform.scale(pg.image.load("../assets/colonne_final_top.png"), (blockSize, blockSize)),
+    "colonne_final": pg.transform.scale(pg.image.load("../assets/colonne_final.png"), (blockSize, blockSize)),
+    "colonne_bottom": pg.transform.scale(pg.image.load("../assets/colonne_bottom.png"), (blockSize, blockSize)),
 }
 
 def drawMap(pg,mapData,partData,blockSize,player):
@@ -48,13 +56,62 @@ def drawMap(pg,mapData,partData,blockSize,player):
                 blockType = '4'
                 sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
             elif block == '7':
-                imageID = "floor_level2" 
+                imageID = "floor_level1boss" 
                 blockType = '7'
                 sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
             elif block == '8':
                 color = (227,81,59)
                 blockType = '8'
                 sprites.append(Block(pg, blockSize, color,pos,blockType,column,lineIndex,isFill=True))
+            elif block == 't':
+                imageID = "sand_level2" 
+                blockType = 't'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == 's':
+                color = (240,199,132)
+                blockType = '8'
+                sprites.append(Block(pg, blockSize, color,pos,blockType,column,lineIndex,isFill=True))
+            elif block == '9':
+                color = (188,232,235)
+                blockType = '9'
+                sprites.append(Block(pg, blockSize, color,pos,blockType,column,lineIndex,isFill=True))
+            elif block == 'm':
+                imageID = "cloud1_level2" 
+                blockType = 'm'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == '%':
+                imageID = "cloud2_level2" 
+                blockType = '%'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == 'l':
+                imageID = "bg_q_final" 
+                blockType = 'l'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == 'h':
+                color = (92,31,31)
+                blockType = 'h'
+                sprites.append(Block(pg, blockSize, color,pos,blockType,column,lineIndex,isFill=True))
+            elif block == 'p':
+                imageID = "floor_final" 
+                blockType = 'p'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == 'n':
+                color = (51,16,16)
+                blockType = 'n'
+                sprites.append(Block(pg, blockSize, color,pos,blockType,column,lineIndex,isFill=True))
+            elif block == ';':
+                imageID = "colonne_final_top" 
+                blockType = ';'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == '/':
+                imageID = "colonne_final" 
+                blockType = '/'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+            elif block == ':':
+                imageID = "colonne_bottom" 
+                blockType = ':'
+                sprites.append(Block(pg, blockSize, imageID,pos,blockType,column,lineIndex))
+    
     
     return sprites
 

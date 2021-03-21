@@ -114,7 +114,7 @@ class Player(pg.sprite.Sprite):
 
         for block in mapBlocks:
             if partData[0] <= block.column <= partData[1]:
-                if block.blockType not in ['0','3','4']:
+                if block.blockType not in ['0','3','4','9','m','%',':','/',';','h','l']:
                     if dimension == "X" and block.line <= self.playerH:
                         temp = pg.sprite.collide_rect(self, block)
                         if temp:
@@ -158,7 +158,7 @@ class Missile(pg.sprite.Sprite):
     def collidingWithElm(self, player, mapBlocks):
         isCollision = False
         for block in mapBlocks:
-            if block.blockType not in ['0']:
+            if block.blockType not in ['0','9','m','%',':','/',';','h','l']:
                 temp = pg.sprite.collide_rect(self, block)
                 if temp:
                     isCollision = True
@@ -171,6 +171,78 @@ class Missile(pg.sprite.Sprite):
 
         return isCollision
 
+class Biden(pg.sprite.Sprite):
+
+    def __init__(self, health, attack, range, ennemyName, x, y):
+        super().__init__()
+
+        # Data
+        self.maxHealth = health
+        self.health = health
+        self.attack = attack
+        self.maxAttackTimer = 30
+        self.attackTimer = 30
+        self.range = range
+        self.wasReloadingAttackSpeed = False
+        self.type = 3
+
+        # Animations
+        self.an1  = pg.image.load('../assets/{}1.png'.format(ennemyName)).convert_alpha()
+        self.still = self.an1
+        self.reversedImage = True
+
+        self.image = self.still
+
+        # Spec. (Position)
+        self.rect = self.image.get_rect()
+        self.originalX = x
+        self.originalY = y
+        self.rect.x = x
+        self.rect.y = y
+
+
+    def showHealth(self,player,screen):
+        w = 530
+        h = 20
+        hW = (self.health/self.maxHealth)*w
+        pg.draw.rect(screen, (100,100,100), pg.Rect((self.originalX - player.posX)-15, self.rect.y - 45,w,h), 2)
+        pg.draw.rect(screen, (255,0,0), pg.Rect((self.originalX - player.posX)-15, self.rect.y - 45,hW,h))
+
+    def canShoot(self,player):
+        dist = math.sqrt( (player.rect.x - self.rect.x)**2 + (player.rect.y - self.rect.y)**2 )
+        canAttack = False
+        shootingDirection = 1
+
+        if dist < self.range and self.attackTimer == self.maxAttackTimer:
+            canAttack = True
+            self.attackTimer = 0
+            self.wasReloadingAttackSpeed = True
+
+        if self.attackTimer != self.maxAttackTimer:
+            self.attackTimer += 1
+        elif dist > self.range and self.attackTimer == self.maxAttackTimer and self.wasReloadingAttackSpeed:
+            self.wasReloadingAttackSpeed = False
+        
+        if player.rect.x < self.rect.x:
+            shootingDirection = -1
+
+        return canAttack,shootingDirection
+            
+    def dirPl(self,player):
+        if player.rect.x < self.rect.x and not self.reversedImage:
+            self.image = pg.transform.flip(self.image, True, False)
+            self.reversedImage = True
+        elif player.rect.x >= self.rect.x and self.reversedImage:
+            self.image = pg.transform.flip(self.image, True, False)
+            self.reversedImage = False
+
+    def update(self,player,screen):
+
+        self.dirPl(player)
+        self.showHealth(player,screen)
+
+        self.rect.x = self.originalX - player.posX
+        return self.health > 0
 
 class Boss(pg.sprite.Sprite):
 
@@ -185,7 +257,7 @@ class Boss(pg.sprite.Sprite):
         self.attackTimer = 180
         self.range = 500
         self.wasReloadingAttackSpeed = False
-        self.isBoss = True
+        self.type = 1
 
         # Animations
         self.an1  = pg.image.load('../assets/{}1.png'.format(ennemyName)).convert_alpha()
@@ -249,7 +321,7 @@ class Ennemy(pg.sprite.Sprite):
         self.attackTimer = 30
         self.range = 100
         self.wasReloadingAttackSpeed = False
-        self.isBoss = False
+        self.type = 0
 
         # Tour
         self.tourPos = 0
@@ -329,14 +401,89 @@ class Ennemy(pg.sprite.Sprite):
         self.rect.x = self.originalX - player.posX + self.tourPos
         return self.health > 0
 
+# Shooting ennemy
+class ShootingEnnemy(pg.sprite.Sprite):
 
+    def __init__(self, health, attack, armor, ennemyID, x, y, range):
+        super().__init__()
+
+        # Data
+        self.maxHealth = health
+        self.health = health
+        self.attack = attack
+        self.armor = armor
+        self.maxAttackTimer = 30
+        self.attackTimer = 30
+        self.range = 500
+        self.wasReloadingAttackSpeed = False
+        self.type = 2
+
+        # Animations
+        self.still  = pg.transform.scale(pg.image.load('../assets/ennemy{}.png'.format(ennemyID)).convert_alpha(), (59, 100))
+        self.attack_img  = pg.transform.scale(pg.image.load('../assets/ennemy{}_attack.png'.format(ennemyID)).convert_alpha(), (59, 100))
+        self.image = self.still
+        self.reversedImage = False
+
+        # Spec. (Position)
+        self.rect = self.image.get_rect()
+        self.originalX = x
+        self.originalY = y
+        self.rect.x = x
+        self.rect.y = y
+
+    def showHealth(self,player,screen):
+        w = 100
+        h = 10
+        hW = (self.health/self.maxHealth)*w
+        pg.draw.rect(screen, (100,100,100), pg.Rect((self.originalX - player.posX)-15, self.rect.y - 45,w,h), 2)
+        pg.draw.rect(screen, (255,0,0), pg.Rect((self.originalX - player.posX)-15, self.rect.y - 45,hW,h))
+
+    def canShoot(self,player):
+        dist = math.sqrt( (player.rect.x - self.rect.x)**2 + (player.rect.y - self.rect.y)**2 )
+        canAttack = False
+        shootingDirection = 1
+
+        if dist < self.range and self.attackTimer == self.maxAttackTimer:
+            canAttack = True
+            self.attackTimer = 0
+            self.wasReloadingAttackSpeed = True
+
+        if self.attackTimer != self.maxAttackTimer:
+            self.attackTimer += 1
+        elif dist > self.range and self.attackTimer == self.maxAttackTimer and self.wasReloadingAttackSpeed:
+            self.wasReloadingAttackSpeed = False
+        
+        if player.rect.x < self.rect.x:
+            shootingDirection = -1
+
+        if math.sqrt( (player.rect.y - self.rect.y)**2 ) > 50:
+            canAttack = False
+
+        return canAttack,shootingDirection
+            
+    def dirPl(self,player):
+        if player.rect.x < self.rect.x and not self.reversedImage:
+            self.image = pg.transform.flip(self.image, True, False)
+            self.reversedImage = True
+        elif player.rect.x >= self.rect.x and self.reversedImage:
+            self.image = pg.transform.flip(self.image, True, False)
+            self.reversedImage = False
+
+    def update(self,player,screen):
+
+        self.dirPl(player)
+
+        self.showHealth(player,screen)
+
+        self.rect.x = self.originalX - player.posX
+        return self.health > 0
 
 
 class Bullet(pg.sprite.Sprite):
 
     def __init__(self,x,y,blockSize,dirPlayer):
         super().__init__()
-        self.v = 20*dirPlayer
+        self.v = 15*dirPlayer
         self.timer = 0
         self.image = pg.transform.scale(pg.image.load('../assets/bullet.png').convert_alpha(), (6, 3))
         self.rect = self.image.get_rect()
@@ -351,10 +498,32 @@ class Bullet(pg.sprite.Sprite):
             return False
         return True
 
+    def update_en(self,player,mapBlocks):
+        self.rect.x += self.v
+        self.timer += 1
+        if self.timer >= 90 or self.collidingWithElmEn(player,mapBlocks):
+            return False
+        return True
+
+    def collidingWithElmEn(self, player, mapBlocks):
+        isCollision = False
+        for block in mapBlocks:
+            if block.line == self.blockH and block.blockType not in ['0','3','4','9','m','%',':','/',';','h','l']:
+                temp = pg.sprite.collide_rect(self, block)
+                if temp:
+                    isCollision = True
+                    break
+        temp = pg.sprite.collide_rect(self, player)
+        if temp:
+            player.health -= 15
+            isCollision = True
+
+        return isCollision
+
     def collidingWithElm(self, player, mapBlocks, ennemies_collector):
         isCollision = False
         for block in mapBlocks:
-            if block.line == self.blockH and block.blockType not in ['0','3','4']:
+            if block.line == self.blockH and block.blockType not in ['0','3','4','9','m','%',':','/',';','h','l']:
                 temp = pg.sprite.collide_rect(self, block)
                 if temp:
                     isCollision = True
