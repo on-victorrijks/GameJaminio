@@ -137,6 +137,39 @@ class Player(pg.sprite.Sprite):
 
         return isCollision
 
+class Missile(pg.sprite.Sprite):
+    def __init__(self,x,blockSize,frameStart):
+        super().__init__()
+        self.v = 0
+        self.image = pg.transform.scale(pg.image.load('../assets/missile.png').convert_alpha(), (20, 60))
+        self.rect = self.image.get_rect()
+        self.originalX = x
+        self.rect.x = x
+        self.rect.y = -100
+        self.frameStart = frameStart
+
+    def update(self,player,mapBlocks):
+        self.rect.y += self.v
+        self.rect.x = self.originalX - player.posX
+        if self.collidingWithElm(player,mapBlocks):
+            return False
+        return True
+
+    def collidingWithElm(self, player, mapBlocks):
+        isCollision = False
+        for block in mapBlocks:
+            if block.blockType not in ['0']:
+                temp = pg.sprite.collide_rect(self, block)
+                if temp:
+                    isCollision = True
+                    break
+        
+        temp = pg.sprite.collide_rect(self, player)
+        if temp:
+            player.health -= 50
+            isCollision = True
+
+        return isCollision
 
 
 class Boss(pg.sprite.Sprite):
@@ -201,7 +234,6 @@ class Boss(pg.sprite.Sprite):
 
         self.rect.x = self.originalX - player.posX
         return self.health > 0
-
 
 class Ennemy(pg.sprite.Sprite):
 

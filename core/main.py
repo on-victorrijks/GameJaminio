@@ -86,6 +86,8 @@ def run_level(LEVELNAME):
     # Bullets
     bullets_collector = []
     ennemies_collector = []
+    missiles_collector = []
+    bullet_time_regen_coeff = 1
 
     if LEVELNAME == "level1":
         # Sounds
@@ -108,6 +110,16 @@ def run_level(LEVELNAME):
         pg.mixer.music.play(-1)
         # Ennemies
         ennemies_collector.append(entities.Boss(1000, 30, "hillary", 1000, 200))
+        bullet_time_regen_coeff = 4
+        # Missiles
+        for i in range(1,20):
+            missiles_collector.append(entities.Missile(300,BLOCKSIZE,i*100))
+            missiles_collector.append(entities.Missile(400,BLOCKSIZE,i*175))
+            missiles_collector.append(entities.Missile(800,BLOCKSIZE,i*150))
+            missiles_collector.append(entities.Missile(400,BLOCKSIZE,i*200))
+            missiles_collector.append(entities.Missile(300,BLOCKSIZE,i*250))
+            missiles_collector.append(entities.Missile(1000,BLOCKSIZE,i*300))
+            missiles_collector.append(entities.Missile(500,BLOCKSIZE,i*360))
 
 
 
@@ -244,6 +256,17 @@ def run_level(LEVELNAME):
 
             screen.blit(ennemy.image, ennemy.rect)
 
+        # Missiles update
+        for missile in missiles_collector:
+            if missile.v == 0 and missile.frameStart == frame:
+                missile.v = 6
+            
+            isExisting = missile.update(player,mapBlocks)
+            if not isExisting:
+                missiles_collector.remove(missile)
+            
+            screen.blit(missile.image, missile.rect)
+
         # Superpower
         if slowDownPower:
             if player.mana > 0:
@@ -317,7 +340,7 @@ def run_level(LEVELNAME):
 
         lastPlayerHealth = player.health
         if frame%60 == 0:
-            player.mana += 1
+            player.mana += 1*bullet_time_regen_coeff
             if player.mana > player.maxMana:
                 player.mana = player.maxMana
         frame += 1
